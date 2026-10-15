@@ -1,0 +1,59 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root { --bg:#f6f2e8; --sf:#fff; --tx:#183c2f; --mu:#5d7468; --pr:#183c2f; --pt:#fff; --ac:#f5b849; --bd:#ddd9c3; --er:#b3261e; scroll-behavior:smooth; }
+  body { @apply min-w-[320px] bg-cream font-sans text-base text-forest; }
+  :focus-visible { @apply outline outline-[3px] outline-offset-2 outline-gold; }
+  h1, h2, h3 { @apply font-display; }
+  h1 { @apply mb-2 text-[clamp(28px,6vw,46px)] font-semibold leading-[1.05] tracking-[-0.03em]; }
+  h2 { @apply mb-2.5 text-[22px] font-semibold tracking-[-0.02em]; }
+  h3 { @apply mb-1.5 text-[17px] font-semibold; }
+  table { @apply w-full border-collapse text-sm; }
+  th, td { @apply border-b border-bd p-2 text-left align-top; }
+  ul { @apply list-disc pl-6; }
+}
+
+@layer components {
+  .btn { @apply inline-block min-h-11 cursor-pointer rounded-full border-0 bg-forest px-6 py-2.5 text-center text-sm font-extrabold text-white no-underline transition hover:bg-forest2 disabled:cursor-not-allowed disabled:opacity-45; }
+  .btn.s { @apply border border-forest/25 bg-transparent text-forest hover:bg-forest/5; }
+  .btn.d { @apply bg-er text-white; }
+  .btn.sm { @apply min-h-9 px-3.5 py-1.5 text-xs; }
+  .card { @apply rounded-3xl border border-forest/10 bg-white/60 p-4; }
+  .chip { @apply inline-block cursor-pointer rounded-full border border-forest/15 bg-white/60 px-3 py-1 text-[13px] font-semibold no-underline; }
+  .chip.on { @apply border-forest bg-forest text-white; }
+  .chip.h { @apply border-gold bg-gold font-bold text-forest; }
+  .f { @apply mb-2.5 grid gap-1; }
+  .f label { @apply text-sm font-semibold; }
+  .f input, .f select, .f textarea { @apply w-full rounded-xl border border-forest/15 bg-white p-2.5; }
+  .big { @apply min-h-[84px] cursor-pointer rounded-2xl border-2 border-forest/15 bg-white p-2.5 text-left; }
+  .big.on { @apply border-forest; }
+  .ok { @apply mb-3 rounded-xl bg-forest px-4 py-2.5 text-white; }
+  .dot { @apply ml-1 rounded-full bg-er px-[7px] text-xs text-white; }
+  .toast { @apply fixed bottom-4 left-1/2 z-30 -translate-x-1/2 rounded-full bg-forest px-5 py-2.5 text-sm font-semibold text-white; }
+  .nav { @apply flex flex-wrap items-center gap-1; }
+  .nav a, .nav button { @apply min-h-10 cursor-pointer rounded-full border-0 bg-transparent px-3 py-2 text-sm font-semibold text-white/85 no-underline transition hover:text-white; }
+  .nav a.on { @apply bg-leaf text-forest; }
+  header .btn.s { @apply border-white/30 text-white hover:bg-white/10; }
+
+  /* ---- dari desain Figma ---- */
+  .brand-mark { @apply grid h-[38px] w-[38px] place-items-center rounded-full bg-leaf text-forest; }
+  .brand-mark svg { @apply h-6 w-6; }
+  .nav-link { @apply relative transition-colors duration-200 hover:text-white; }
+  .nav-link::after { @apply absolute -bottom-[7px] left-0 right-0 h-px scale-x-0 bg-leaf transition-transform duration-200 content-['']; }
+  .nav-link:hover::after { @apply scale-x-100; }
+  .hero-glow { @apply absolute right-[-10%] top-[5%] h-[60vw] max-h-[860px] w-[60vw] max-w-[860px] rounded-full; background: radial-gradient(circle, rgba(93,133,94,.32), rgba(24,60,47,0) 68%); }
+  .hero-photo-frame { @apply relative min-h-[390px] overflow-hidden rounded-[44%_44%_1.5rem_1.5rem] border border-white/15 sm:min-h-[430px] sm:rounded-[46%_46%_2rem_2rem]; height: min(63vw, 575px); box-shadow: 0 35px 75px rgb(6 24 18 / 38%); }
+  .eyebrow { @apply inline-flex items-center gap-2.5 text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#4c684d]; }
+  .eyebrow::before { @apply h-px w-6 bg-current content-['']; }
+  .benefit-card, .menu-card { @apply rounded-3xl border border-forest/10 bg-white/40 p-7 transition duration-300 hover:-translate-y-1.5 hover:bg-white hover:shadow-[0_20px_50px_rgb(24_60_47/8%)]; }
+  .benefit-card { @apply min-h-[250px] sm:min-h-[285px]; }
+  .cta-ring { @apply absolute h-[220px] w-[220px] rounded-full border border-forest/15; }
+  .cta-ring-left { @apply -bottom-[120px] -left-[70px]; }
+  .cta-ring-right { @apply -right-[60px] -top-[120px]; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}

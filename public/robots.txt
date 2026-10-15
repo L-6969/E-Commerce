@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /masuk
+Disallow: /keluar
+Disallow: /keranjang
+Disallow: /checkout
+Disallow: /pesanan/
+
+# Tambahkan setelah domain final dan sitemap dibuat backend:
+# Sitemap: https://DOMAIN-ANDA/sitemap.xml
