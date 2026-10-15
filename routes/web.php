@@ -2,8 +2,8 @@
 // ROUTE DEMO: closure + data contoh supaya semua view bisa dibuka tanpa backend.
 // Saat backend siap, ganti closure dengan controller (nama route JANGAN diubah, dipakai di view).
 use App\Support\Demo;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\View;
 
 $demoBack = fn() => back()->with('ok', 'Contoh: aksi diterima (belum terhubung backend).');
 
@@ -19,16 +19,15 @@ Route::get('/pesanan/{token}', function ($token) {
 })->name('order.show');
 
 // ---------- Auth ----------
-Route::get('/masuk', fn() => view('admin.login'))->name('login');
-Route::post('/masuk', fn() => redirect()->route('admin.orders'))->name('login.store');
+Route::get('/masuk', [AuthController::class, 'form'])->name('login');
+Route::post('/masuk', [AuthController::class, 'login'])->middleware('throttle:5,1')->name('login.store');
 // Verifikasi dua langkah untuk Pemilik (Fase 2, A07). Backend: arahkan Pemilik ke sini setelah kata sandi benar.
 Route::get('/masuk/verifikasi', fn() => view('admin.two-factor'))->name('login.2fa');
 Route::post('/masuk/verifikasi', fn() => redirect()->route('admin.orders'))->name('login.2fa.verify');
-Route::post('/keluar', fn() => redirect()->route('home'))->name('logout');
+Route::post('/keluar', [AuthController::class, 'logout'])->middleware('auth')->name('logout');
 
 // ---------- Admin (tambahkan middleware auth + role di backend) ----------
-Route::prefix('admin')->group(function () use ($demoBack) {
-    View::composer('layouts.admin', fn($v) => $v->with(['authUser' => Demo::user(request('role', 'owner')), 'newOrdersCount' => Demo::orders()->where('status', 'Baru')->count(), 'settings' => Demo::settings()]));
+Route::prefix('admin')->middleware(['auth', 'dashboard.role'])->group(function () use ($demoBack) {
 
     Route::get('/pesanan', fn() => view('admin.orders.index', ['orders' => Demo::orders(), 'filters' => request()->only('status', 'date', 'channel')]))->name('admin.orders');
     Route::get('/pesanan/{order}', fn($id) => view('admin.orders.show', ['order' => Demo::orders()->firstWhere('id', (int) $id) ?? Demo::orders()->first()]))->name('admin.orders.show');
@@ -51,10 +50,10 @@ Route::prefix('admin')->group(function () use ($demoBack) {
         $rows = $done->flatMap->items->groupBy('product_name_snapshot')->map(fn($g, $n) => (object) ['name' => $n, 'qty' => $g->sum('qty'), 'total' => $g->sum('line_total')])->values();
         return view('admin.report', ['mode' => request('mode', 'day'), 'date' => request('date', now()->toDateString()), 'rows' => $rows, 'max' => max(1, $rows->max('total')),
             'summary' => (object) ['count' => $done->count(), 'total' => $done->sum('total'), 'online' => $done->where('channel', 'online')->sum('total'), 'offline' => $done->where('channel', 'offline')->sum('total')]]);
-    })->name('admin.report');
+    })->middleware('role:owner')->name('admin.report');
     Route::get('/stok', fn() => view('admin.stock', ['items' => Demo::stock()]))->name('admin.stock');
     Route::post('/stok/{item}', $demoBack)->name('admin.stock.adjust');
-    Route::get('/pengaturan', fn() => view('admin.settings', ['settings' => Demo::settings()]))->name('admin.settings');
-    Route::put('/pengaturan', $demoBack)->name('admin.settings.update');
+    Route::get('/pengaturan', fn() => view('admin.settings', ['settings' => Demo::settings()]))->middleware('role:owner')->name('admin.settings');
+    Route::put('/pengaturan', $demoBack)->middleware('role:owner')->name('admin.settings.update');
     Route::get('/log', fn() => view('admin.logs', ['logs' => Demo::logs()]))->name('admin.logs');
 });

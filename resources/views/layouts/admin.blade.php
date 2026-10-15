@@ -1,4 +1,4 @@
-@php $u = $authUser ?? auth()->user(); $isOwner = $u && $u->role === 'owner'; @endphp
+@php $u = auth()->user(); $isOwner = $u && $u->role === 'owner'; @endphp
 <!DOCTYPE html>
 <html lang="id">
 <head>
