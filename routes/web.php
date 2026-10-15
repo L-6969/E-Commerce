@@ -3,6 +3,7 @@
 // Saat backend siap, ganti closure dengan controller (nama route JANGAN diubah, dipakai di view).
 use App\Support\Demo;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 $demoBack = fn() => back()->with('ok', 'Contoh: aksi diterima (belum terhubung backend).');
@@ -38,12 +39,13 @@ Route::prefix('admin')->middleware(['auth', 'dashboard.role'])->group(function (
     Route::get('/offline', fn() => view('admin.offline', ['products' => Demo::products()->where('is_active', true)]))->name('admin.offline');
     Route::post('/offline', $demoBack)->name('admin.offline.store');
 
-    Route::get('/produk', fn() => view('admin.products.index', ['products' => Demo::products()]))->name('admin.products');
-    Route::get('/produk/baru', fn() => view('admin.products.create', ['categories' => Demo::categories()]))->name('admin.products.create');
-    Route::post('/produk', $demoBack)->name('admin.products.store');
-    Route::get('/produk/{product}/ubah', fn($id) => view('admin.products.edit', ['categories' => Demo::categories(), 'product' => Demo::products()->firstWhere('id', (int) $id)]))->name('admin.products.edit');
-    Route::put('/produk/{product}', $demoBack)->name('admin.products.update');
-    Route::patch('/produk/{product}/toggle', $demoBack)->name('admin.products.toggle');
+    Route::get('/produk', [ProductController::class, 'index'])->name('admin.products');
+    Route::get('/produk/baru', [ProductController::class, 'create'])->middleware('role:owner')->name('admin.products.create');
+    Route::post('/produk', [ProductController::class, 'store'])->middleware('role:owner')->name('admin.products.store');
+    Route::get('/produk/{product}/ubah', [ProductController::class, 'edit'])->middleware('role:owner')->name('admin.products.edit');
+    Route::put('/produk/{product}', [ProductController::class, 'update'])->middleware('role:owner')->name('admin.products.update');
+    Route::patch('/produk/{product}/stok', [ProductController::class, 'updateStock'])->name('admin.products.stock');
+    Route::patch('/produk/{product}/toggle', [ProductController::class, 'toggle'])->name('admin.products.toggle');
 
     Route::get('/laporan', function () {
         $done = Demo::orders()->where('status', 'Selesai');
