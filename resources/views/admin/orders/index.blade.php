@@ -14,8 +14,12 @@
   <thead><tr><th>Kode</th><th>Kanal</th><th>Pembeli</th><th>Total</th><th>Status</th><th></th></tr></thead>
   <tbody>
   @forelse($orders as $o)
-    <tr><td>{{ $o->code }}</td><td>{{ $o->channel }}</td><td>{{ $o->customer_name ?: '-' }}<div class="text-sm text-mu">{{ mask_phone($o->customer_phone) }}</div></td>
-      <td>{{ rupiah($o->total) }}</td><td><span class="chip">{{ $o->status === 'Batal' ? 'Batal' : status_label($o->status, $o->fulfillment) }}</span></td>
+    <tr @if($o->status === 'Baru') style="background:#fff8e6" @endif>
+      <td>{{ $o->code }}<div class="text-[11px] text-mu">{{ $o->created_at->format('d/m H:i') }}</div></td><td>{{ $o->channel }}</td><td>{{ $o->customer_name ?: '-' }}<div class="text-sm text-mu">{{ mask_phone($o->customer_phone) }}</div></td>
+      <td>{{ rupiah($o->total) }}</td>
+      <td><span class="chip">{{ $o->status === 'Batal' ? 'Batal' : status_label($o->status, $o->fulfillment) }}</span>
+        @if($o->status === 'Baru')<div class="text-[11px] text-er mt-1">⏱ {{ $o->created_at->diffForHumans(null, true) }} yang lalu</div>@endif
+      </td>
       <td><a class="btn s sm" href="{{ route('admin.orders.show', $o->id) }}">Detail</a></td></tr>
   @empty<tr><td colspan="6" class="text-sm text-mu">Tidak ada pesanan untuk filter ini.</td></tr>@endforelse
   </tbody></table></div>
