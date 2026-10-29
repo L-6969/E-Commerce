@@ -31,7 +31,7 @@ document.addEventListener('alpine:init', () => {
     msg: '',
     save() { try { localStorage.setItem('cart', JSON.stringify(this.items)) } catch (e) {} },
     get count() { return Object.values(this.items).reduce((a, b) => a + b, 0) },
-    add(id, n = 1) { const q = (this.items[id] || 0) + n; if (q <= 0) delete this.items[id]; else this.items[id] = q; this.items = { ...this.items }; this.save() },
+    add(id, n = 1) { const q = (this.items[id] || 0) + n; if (q <= 0) delete this.items[id]; else if (q > 99) { this.toast('Maksimal 99 per item.'); this.items[id] = 99; } else this.items[id] = q; this.items = { ...this.items }; this.save() },
     clear() { this.items = {}; this.save() },
     prune() { const C = window.CATALOG || {}; const gone = []; for (const id of Object.keys(this.items)) { if (!C[id]) { gone.push('produk yang sudah tidak dijual'); delete this.items[id] } else if (!C[id].available) { gone.push(C[id].name); delete this.items[id] } } this.items = { ...this.items }; this.save(); return gone },
     lines() { const C = window.CATALOG || {}; return Object.entries(this.items).filter(([id]) => C[id]).map(([id, q]) => ({ id, q, ...C[id] })) },
