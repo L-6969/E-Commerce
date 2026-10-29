@@ -56,5 +56,11 @@ Route::prefix('admin')->group(function () use ($demoBack) {
     Route::post('/stok/{item}', $demoBack)->name('admin.stock.adjust');
     Route::get('/pengaturan', fn() => view('admin.settings', ['settings' => Demo::settings()]))->name('admin.settings');
     Route::put('/pengaturan', $demoBack)->name('admin.settings.update');
+    Route::get('/akun', fn() => view('admin.users.index', ['users' => Demo::users()]))->name('admin.users');
+    Route::get('/akun/baru', fn() => view('admin.users.create'))->name('admin.users.create');
+    Route::post('/akun', $demoBack)->name('admin.users.store');
+    Route::get('/akun/{user}/ubah', fn($id) => view('admin.users.edit', ['user' => Demo::users()->firstWhere('id', (int) $id)]))->name('admin.users.edit');
+    Route::put('/akun/{user}', $demoBack)->name('admin.users.update');
+    Route::patch('/akun/{user}/toggle', $demoBack)->name('admin.users.toggle');
     Route::get('/log', fn() => view('admin.logs', ['logs' => Demo::logs()]))->name('admin.logs');
 });

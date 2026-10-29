@@ -23,6 +23,7 @@
     @if($isOwner)<a href="{{ route('admin.report') }}" class="{{ request()->routeIs('admin.report') ? 'on' : '' }}">Laporan</a>@endif
     <a href="{{ route('admin.stock') }}" class="{{ request()->routeIs('admin.stock*') ? 'on' : '' }}">Stok bahan</a>
     @if($isOwner)<a href="{{ route('admin.settings') }}" class="{{ request()->routeIs('admin.settings*') ? 'on' : '' }}">Pengaturan</a>@endif
+    @if($isOwner)<a href="{{ route('admin.users') }}" class="{{ request()->routeIs('admin.users*') ? 'on' : '' }}">Akun</a>@endif
     <a href="{{ route('admin.logs') }}" class="{{ request()->routeIs('admin.logs') ? 'on' : '' }}">Log</a>
     <form method="POST" action="{{ route('logout') }}">@csrf<button class="btn s sm">Keluar ({{ $u->name ?? '' }})</button></form>
   </nav>

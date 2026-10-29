@@ -27,5 +27,6 @@ class Demo
             $mk(3, 'online', 'Diproses', [['Cilok Isi Keju', 13000, 2]], ['fulfillment' => 'antar', 'delivery_address' => 'Jl. Contoh No. 1, Bandung', 'note' => 'Kuah dipisah']),
         ]);
     }
+    public static function users() { return collect([(object) ['id' => 1, 'name' => 'Pemilik', 'email' => 'pemilik@ciloksapisr.test', 'role' => 'owner', 'is_active' => true], (object) ['id' => 2, 'name' => 'Staf 1', 'email' => 'staf1@ciloksapisr.test', 'role' => 'staff', 'is_active' => true], (object) ['id' => 3, 'name' => 'Staf 2', 'email' => 'staf2@ciloksapisr.test', 'role' => 'staff', 'is_active' => false]]); }
     public static function logs() { return collect([(object) ['created_at' => now(), 'user' => 'Pemilik', 'action' => 'Ubah harga Cilok Sapi Pedas: 11000 → 12000']]); }
 }
