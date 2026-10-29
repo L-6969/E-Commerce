@@ -16,6 +16,7 @@
     <div class="f"><label for="email">Email</label><input id="email" type="email" name="email" value="{{ old('email') }}" autocomplete="username" required autofocus></div>
     <div class="f"><label for="password">Kata sandi</label><input id="password" type="password" name="password" autocomplete="current-password" required></div>
     @if($errors->any())<div class="text-[13px] text-er" role="alert">{{ $errors->first() }}</div>@endif
+    @if(session('status'))<div class="text-[13px] text-mu" role="status">{{ session('status') }}</div>@endif
     <button class="btn" style="width:100%">Masuk</button>
     <p class="text-sm text-mu"><a href="{{ route('home') }}">Kembali ke website</a></p>
   </form>
