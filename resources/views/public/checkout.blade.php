@@ -23,13 +23,13 @@
   </div>
 
   <div class="f"><label for="name">Nama</label><input id="name" name="name" value="{{ old('name') }}" autocomplete="name" required minlength="2"><span class="text-[13px] text-er">{{ $errors->first('name') }}</span></div>
-  <div class="f"><label for="phone">Nomor HP</label><input id="phone" name="phone" value="{{ old('phone') }}" inputmode="tel" placeholder="081234567890" required><span class="text-[13px] text-er">{{ $errors->first('phone') }}</span></div>
+  <div class="f"><label for="phone">Nomor HP (WhatsApp)</label><input id="phone" name="phone" value="{{ old('phone') }}" inputmode="tel" placeholder="081234567890" pattern="^08[0-9]{8,12}$" title="Nomor HP harus diawali 08 (10–14 digit)" required><span class="text-[13px] text-er">{{ $errors->first('phone') }}</span></div>
   <div class="f"><label for="ful">Ambil atau antar</label>
     <select id="ful" name="fulfillment" x-model="ful"><option value="ambil">Ambil di outlet</option><option value="antar">Diantar (ongkir dibicarakan lewat WhatsApp)</option></select></div>
   <div class="f" x-show="ful === 'ambil'">
     <label for="pk">Waktu ambil</label>
     <select id="pk" x-model="pk"><option value="asap">Secepatnya</option><option value="jam">Pilih jam</option></select>
-    <input type="time" name="pickup_time" value="{{ old('pickup_time') }}" x-show="pk === 'jam'" x-bind:disabled="ful !== 'ambil' || pk !== 'jam'" aria-label="Jam ambil">
+    <input type="time" name="pickup_time" value="{{ old('pickup_time') }}" x-show="pk === 'jam'" x-bind:disabled="ful !== 'ambil' || pk !== 'jam'" :required="ful === 'ambil' && pk === 'jam'" aria-label="Jam ambil">
     <span class="text-sm text-mu">Jam ambil harus dalam jam buka: {{ $settings->hours }}.</span>
     <span class="text-[13px] text-er">{{ $errors->first('pickup_time') }}</span>
   </div>
