@@ -13,6 +13,12 @@ class Demo
             ->map(fn($r) => (object) ['id' => $r[0], 'name' => $r[1], 'category' => $r[2], 'price' => $r[3], 'emoji' => $r[4], 'stock' => $r[5], 'is_available' => true, 'is_active' => true, 'photo_url' => null, 'description' => [1 => 'Cilok sapi gurih dengan bumbu kacang khas.', 2 => 'Cilok sapi dengan sambal pedas racikan sendiri.', 3 => 'Cilok sapi berisi keju leleh.', 4 => 'Kuah kaldu sapi hangat pelengkap cilok.', 5 => 'Tambahan bumbu kacang untuk cilok.', 6 => 'Es teh manis segar.'][$r[0]]]);
     }
     public static function stock() { return collect([['id' => 1, 'name' => 'Daging sapi (kg)', 'qty' => 12], ['id' => 2, 'name' => 'Tepung tapioka (kg)', 'qty' => 20], ['id' => 3, 'name' => 'Bumbu kacang (kg)', 'qty' => 6]])->map(fn($r) => (object) $r); }
+    public static function staff()
+    {
+        return collect([
+            (object) ['id' => 2, 'name' => 'Staf Outlet (Kasir)', 'email' => 'staf@ciloksr.com', 'role' => 'staff', 'is_active' => true, 'created_at' => now()->subDays(14)],
+        ]);
+    }
     public static function orders()
     {
         $mk = function ($id, $ch, $status, $items, $extra = []) {
@@ -27,6 +33,5 @@ class Demo
             $mk(3, 'online', 'Diproses', [['Cilok Isi Keju', 13000, 2]], ['fulfillment' => 'antar', 'delivery_address' => 'Jl. Contoh No. 1, Bandung', 'note' => 'Kuah dipisah']),
         ]);
     }
-    public static function users() { return collect([(object) ['id' => 1, 'name' => 'Pemilik', 'email' => 'pemilik@ciloksapisr.test', 'role' => 'owner', 'is_active' => true], (object) ['id' => 2, 'name' => 'Staf 1', 'email' => 'staf1@ciloksapisr.test', 'role' => 'staff', 'is_active' => true], (object) ['id' => 3, 'name' => 'Staf 2', 'email' => 'staf2@ciloksapisr.test', 'role' => 'staff', 'is_active' => false]]); }
     public static function logs() { return collect([(object) ['created_at' => now(), 'user' => 'Pemilik', 'action' => 'Ubah harga Cilok Sapi Pedas: 11000 → 12000']]); }
 }

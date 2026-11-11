@@ -28,9 +28,24 @@ Route::post('/keluar', fn() => redirect()->route('home'))->name('logout');
 
 // ---------- Admin (tambahkan middleware auth + role di backend) ----------
 Route::prefix('admin')->group(function () use ($demoBack) {
-    View::composer('layouts.admin', fn($v) => $v->with(['authUser' => Demo::user(request('role', 'owner')), 'newOrdersCount' => Demo::orders()->where('status', 'Baru')->count(), 'settings' => Demo::settings()]));
+    View::composer(['layouts.admin', 'admin.*'], function ($v) {
+        $u = Demo::user(request('role', 'owner'));
+        $v->with([
+            'authUser' => $u,
+            'isOwner' => $u->role === 'owner',
+            'newOrdersCount' => Demo::orders()->where('status', 'Baru')->count(),
+            'settings' => Demo::settings(),
+        ]);
+    });
 
-    Route::get('/pesanan', fn() => view('admin.orders.index', ['orders' => Demo::orders(), 'filters' => request()->only('status', 'date', 'channel')]))->name('admin.orders');
+    Route::get('/pesanan', function () {
+        $orders = Demo::orders();
+        $q = trim((string) request('q'));
+        if ($q !== '') {
+            $orders = $orders->filter(fn($o) => str_contains(strtolower($o->code), strtolower($q)) || str_contains(strtolower((string) $o->customer_name), strtolower($q)) || str_contains((string) $o->customer_phone, $q));
+        }
+        return view('admin.orders.index', ['orders' => $orders, 'filters' => request()->only('status', 'date', 'channel', 'q')]);
+    })->name('admin.orders');
     Route::get('/pesanan/{order}', fn($id) => view('admin.orders.show', ['order' => Demo::orders()->firstWhere('id', (int) $id) ?? Demo::orders()->first()]))->name('admin.orders.show');
     Route::post('/pesanan/{order}/status', $demoBack)->name('admin.orders.status');
     Route::post('/pesanan/{order}/bayar', $demoBack)->name('admin.orders.payment');
@@ -45,6 +60,7 @@ Route::prefix('admin')->group(function () use ($demoBack) {
     Route::get('/produk/{product}/ubah', fn($id) => view('admin.products.edit', ['categories' => Demo::categories(), 'product' => Demo::products()->firstWhere('id', (int) $id)]))->name('admin.products.edit');
     Route::put('/produk/{product}', $demoBack)->name('admin.products.update');
     Route::patch('/produk/{product}/toggle', $demoBack)->name('admin.products.toggle');
+    Route::post('/produk/{product}/stok', $demoBack)->name('admin.products.stock');
 
     Route::get('/laporan', function () {
         $done = Demo::orders()->where('status', 'Selesai');
@@ -54,13 +70,9 @@ Route::prefix('admin')->group(function () use ($demoBack) {
     })->name('admin.report');
     Route::get('/stok', fn() => view('admin.stock', ['items' => Demo::stock()]))->name('admin.stock');
     Route::post('/stok/{item}', $demoBack)->name('admin.stock.adjust');
-    Route::get('/pengaturan', fn() => view('admin.settings', ['settings' => Demo::settings()]))->name('admin.settings');
+    Route::get('/pengaturan', fn() => view('admin.settings', ['settings' => Demo::settings(), 'staffList' => Demo::staff()]))->name('admin.settings');
     Route::put('/pengaturan', $demoBack)->name('admin.settings.update');
-    Route::get('/akun', fn() => view('admin.users.index', ['users' => Demo::users()]))->name('admin.users');
-    Route::get('/akun/baru', fn() => view('admin.users.create'))->name('admin.users.create');
-    Route::post('/akun', $demoBack)->name('admin.users.store');
-    Route::get('/akun/{user}/ubah', fn($id) => view('admin.users.edit', ['user' => Demo::users()->firstWhere('id', (int) $id)]))->name('admin.users.edit');
-    Route::put('/akun/{user}', $demoBack)->name('admin.users.update');
-    Route::patch('/akun/{user}/toggle', $demoBack)->name('admin.users.toggle');
+    Route::post('/pengaturan/staf', $demoBack)->name('admin.settings.staff.store');
+    Route::patch('/pengaturan/staf/{user}/toggle', $demoBack)->name('admin.settings.staff.toggle');
     Route::get('/log', fn() => view('admin.logs', ['logs' => Demo::logs()]))->name('admin.logs');
 });

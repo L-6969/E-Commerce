@@ -14,18 +14,20 @@
 </head>
 <body>
 <header class="sticky top-0 z-20 bg-forest text-white">
-<div class="mx-auto flex max-w-[1000px] flex-wrap items-center gap-3 p-4">
-  <a class="mr-auto text-lg font-extrabold no-underline" href="{{ route('admin.orders') }}">Admin · {{ $settings->name ?? '' }}</a>
-  <nav class="nav" aria-label="Admin">
+<div class="mx-auto flex max-w-[1000px] flex-wrap items-center justify-between gap-3 p-3 sm:p-4">
+  <div class="flex items-center gap-2">
+    <a class="text-base sm:text-lg font-extrabold no-underline text-white" href="{{ route('admin.orders') }}">Admin · {{ $settings->name ?? 'Cilok Sapi SR' }}</a>
+    <span class="rounded-full bg-leaf px-2.5 py-0.5 text-[11px] font-bold uppercase text-forest">{{ $isOwner ? 'Pemilik' : 'Staf' }}</span>
+  </div>
+  <nav class="nav overflow-x-auto max-w-full py-1" aria-label="Admin">
     <a href="{{ route('admin.orders') }}" class="{{ request()->routeIs('admin.orders*') ? 'on' : '' }}">Pesanan @if(($newOrdersCount ?? 0) > 0)<span class="dot">{{ $newOrdersCount }}</span>@endif</a>
     <a href="{{ route('admin.offline') }}" class="{{ request()->routeIs('admin.offline*') ? 'on' : '' }}">Input offline</a>
     <a href="{{ route('admin.products') }}" class="{{ request()->routeIs('admin.products*') ? 'on' : '' }}">Produk</a>
     @if($isOwner)<a href="{{ route('admin.report') }}" class="{{ request()->routeIs('admin.report') ? 'on' : '' }}">Laporan</a>@endif
     <a href="{{ route('admin.stock') }}" class="{{ request()->routeIs('admin.stock*') ? 'on' : '' }}">Stok bahan</a>
-    @if($isOwner)<a href="{{ route('admin.settings') }}" class="{{ request()->routeIs('admin.settings*') ? 'on' : '' }}">Pengaturan</a>@endif
-    @if($isOwner)<a href="{{ route('admin.users') }}" class="{{ request()->routeIs('admin.users*') ? 'on' : '' }}">Akun</a>@endif
-    <a href="{{ route('admin.logs') }}" class="{{ request()->routeIs('admin.logs') ? 'on' : '' }}">Log</a>
-    <form method="POST" action="{{ route('logout') }}">@csrf<button class="btn s sm">Keluar ({{ $u->name ?? '' }})</button></form>
+    @if($isOwner)<a href="{{ route('admin.settings') }}" class="{{ request()->routeIs('admin.settings*') ? 'on' : '' }}">Pengaturan & Staf</a>@endif
+    @if($isOwner)<a href="{{ route('admin.logs') }}" class="{{ request()->routeIs('admin.logs') ? 'on' : '' }}">Log</a>@endif
+    <form method="POST" action="{{ route('logout') }}" class="inline-block">@csrf<button class="btn s sm">Keluar ({{ $u->name ?? '' }})</button></form>
   </nav>
 </div></header>
 <main class="mx-auto max-w-[1000px] p-4">
