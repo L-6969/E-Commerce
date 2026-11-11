@@ -14,8 +14,9 @@
         <span class="text-5xl leading-none" style="font-size:30px" x-text="l.emoji" aria-hidden="true"></span>
         <div><b x-text="l.name"></b><div class="text-sm text-mu" x-text="$store.cart.rp(l.price)"></div><div class="text-[13px] text-er" x-show="!l.available">Produk habis. Hapus dari keranjang.</div></div>
         <div class="flex flex-wrap items-center gap-2 ml-auto">
-          <button type="button" class="btn s sm" aria-label="Kurangi" x-on:click="$store.cart.add(l.id, -1)">−</button><b x-text="l.q"></b>
-          <button type="button" class="btn s sm" aria-label="Tambah" x-on:click="$store.cart.add(l.id, 1)">+</button>
+          <button type="button" class="btn s sm" aria-label="Kurangi" x-on:click="$store.cart.add(l.id, -1)">−</button>
+          <span class="inline-block min-w-[24px] text-center font-bold" x-text="l.q"></span>
+          <button type="button" class="btn s sm" aria-label="Tambah" :disabled="l.q >= 99" x-on:click="$store.cart.add(l.id, 1)">+</button>
           <b style="min-width:90px;text-align:right" x-text="$store.cart.rp(l.price * l.q)"></b>
           <button type="button" class="btn d sm" x-on:click="$store.cart.add(l.id, -l.q)">Hapus</button>
         </div>
