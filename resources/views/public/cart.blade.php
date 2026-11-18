@@ -3,7 +3,17 @@
 @section('robots', 'noindex,nofollow')
 @section('content')
 {{-- Variabel: $settings, $products. Keranjang disimpan di browser (localStorage), server menghitung ulang saat checkout. --}}
-<script>window.CATALOG = @json($products->mapWithKeys(fn($p) => [$p->id => ['name' => $p->name, 'price' => $p->price, 'emoji' => $p->emoji, 'available' => (bool) $p->is_available && (bool) $p->is_active]]));</script>
+@php
+  $catalog = $products->mapWithKeys(fn($p) => [
+    $p->id => [
+      'name' => $p->name,
+      'price' => $p->price,
+      'emoji' => $p->emoji,
+      'available' => (bool) $p->is_available && (bool) $p->is_active,
+    ]
+  ]);
+@endphp
+<script>window.CATALOG = {!! json_encode($catalog, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) !!};</script>
 <h2>Keranjang</h2>
 <div x-data="{ gone: [] }" x-init="gone = $store.cart.prune()">
   <div class="card mb-3 text-er" x-show="gone.length" style="display:none" role="alert">Dihapus dari keranjang karena habis atau tidak tersedia: <b x-text="gone.join(', ')"></b>.</div>
