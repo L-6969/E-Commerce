@@ -4,7 +4,17 @@ namespace App\Support;
 /** Data contoh agar view bisa dilihat tanpa backend. HAPUS saat controller asli siap. */
 class Demo
 {
-    public static function settings() { return (object) ['name' => 'Cilok Sapi SR Khas Ciamis', 'wa' => '6281234567890', 'hours' => '08.00–21.00 setiap hari', 'address' => '[isi alamat outlet]', 'halal' => '', 'template' => 'Halo Cilok Sapi SR, saya mau pesan:']; }
+    public static function settings()
+    {
+        return (object) [
+            'name' => 'Cilok Sapi SR Khas Ciamis',
+            'wa' => '6281200001234',
+            'hours' => 'Senin–Sabtu, 09.00–20.00 WIB',
+            'address' => 'Jl. Jenderal Sudirman, Ciamis, Jawa Barat',
+            'halal' => 'ID32110001234560723',
+            'template' => 'Halo Cilok Sapi SR, saya mau pesan:',
+        ];
+    }
     public static function user($role = 'owner') { return (object) ['name' => $role === 'owner' ? 'Pemilik' : 'Staf', 'role' => $role]; }
     public static function categories() { return collect(['Cilok', 'Tambahan', 'Minuman']); }
     public static function products()
