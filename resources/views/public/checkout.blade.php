@@ -7,7 +7,17 @@
  POST route('checkout.store') mengirim: name, phone, fulfillment (ambil|antar), delivery_address, payment_method, note,
  pickup_time (HH:MM, opsional, hanya jika ambil; wajib dalam jam buka), consent (1), items (JSON {"produk_id": qty}), idempotency_token. Server WAJIB validasi + hitung ulang total, simpan status "Baru", lalu redirect ke route('order.show', $token).
 --}}
-<script>window.CATALOG = @json($products->mapWithKeys(fn($p) => [$p->id => ['name' => $p->name, 'price' => $p->price, 'emoji' => $p->emoji, 'available' => (bool) $p->is_available && (bool) $p->is_active]]));</script>
+@php
+  $catalog = $products->mapWithKeys(fn($p) => [
+    $p->id => [
+      'name' => $p->name,
+      'price' => $p->price,
+      'emoji' => $p->emoji,
+      'available' => (bool) $p->is_available && (bool) $p->is_active,
+    ]
+  ]);
+@endphp
+<script>window.CATALOG = {!! json_encode($catalog, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT | JSON_UNESCAPED_UNICODE) !!};</script>
 <h2>Checkout</h2>
 <form method="POST" action="{{ route('checkout.store') }}" class="card" x-data="{ ful: @js(old('fulfillment', 'ambil')), busy: false, gone: [], pk: @js(old('pickup_time') ? 'jam' : 'asap') }" x-init="gone = $store.cart.prune()"
       x-on:submit="if (!$store.cart.lines().length) { $event.preventDefault(); return } busy = true">
